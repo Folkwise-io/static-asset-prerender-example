@@ -19,6 +19,8 @@ var parseUrl = require("parseurl");
 var resolve = require("path").resolve;
 var send = require("send");
 var url = require("url");
+var fs = require("fs");
+var nodePath = require("path");
 
 /**
  * Module exports.
@@ -91,6 +93,15 @@ function serveStatic(root, options) {
     if (path === "/" && originalUrl.pathname.substr(-1) !== "/") {
       path = "";
     }
+
+    // MINTBEAN ==================================================================
+    // If the file doesn't exist, the path is index.html
+    const directory = nodePath.resolve(__dirname, "..", "..", "dist");
+    const filePath = nodePath.join(directory, path);
+    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+      path = "index.html";
+    }
+    // ===========================================================================
 
     // create send stream
     var stream = send(req, path, opts);
