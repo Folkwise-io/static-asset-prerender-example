@@ -3,11 +3,12 @@ import * as path from "path";
 import * as serveStatic from "serve-static";
 var parseUrl = require("parseurl");
 import * as fs from "fs";
-import templateHtml from "./utils";
+import templateHtml from "./htmlUtil";
+import ImageBuilder from "./ImageBuilder";
 
 const app = Express();
 
-app.get("/status", (req, res, next) => {
+app.get("/dynamic/status", (req, res, next) => {
   res.json({
     isLive: true,
   });
@@ -15,6 +16,21 @@ app.get("/status", (req, res, next) => {
 
 const staticPath = path.resolve(__dirname, "../", "dist");
 const staticMiddleware = serveStatic(staticPath);
+
+app.get("/dynamic/image", (req, res, next) => {
+  const text = req.params.text || "Hello, World";
+
+  const ib = new ImageBuilder(1200, 627);
+
+  const img = ib
+    .background("#13cc13")
+    .header(text, { x: 200, y: 200 })
+    .paragraph("This is Mintbean speaking.", { x: 200, y: 300 })
+    .paragraph("Is there anybody out there?", { x: 200, y: 400 })
+    .build();
+
+  res.end(img);
+});
 
 app.get("*", (req, res, next) => {
   var originalUrl = parseUrl.original(req);
