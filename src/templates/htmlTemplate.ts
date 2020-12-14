@@ -1,21 +1,8 @@
 import * as ejs from "ejs";
-import { DeepPartial } from "tsdef";
 
 interface Data {
-  imagePaths: {
-    twitter: string;
-  };
+  imagePath: string;
   title: string;
-}
-
-interface Options {
-  basePath: string;
-  defaultImagePath: string;
-}
-
-interface Params {
-  data: Data;
-  options: Options;
 }
 
 const HTML = `<!DOCTYPE html>
@@ -25,14 +12,14 @@ const HTML = `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="twitter:image"
-      content="<%= options.basePath %><%= data.imagePaths.twitter %>"
+      content="<%- imagePath %>"
     />
     <meta
       property="og:image"
-      content="<%= options.basePath %><%= options.defaultImagePath %>"
+      content="<%- imagePath %>"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title><%= data.title %></title>
+    <title><%= title %></title>
   </head>
 
   <body>
@@ -41,35 +28,8 @@ const HTML = `<!DOCTYPE html>
   </body>
 </html>`;
 
-const templateHtml = (
-  dataParams: DeepPartial<Data>,
-  optionsParams: DeepPartial<Options>
-) => {
-  const options: Options = Object.assign(
-    {
-      basePath: "https://i.picsum.photos",
-      defaultImagePath:
-        "/id/447/400/300.jpg?hmac=p7k9AlR5nxUakDtYqj76nKr2QntGCaV4FIHnXeFbZKA",
-    },
-    optionsParams
-  );
-
-  const data: Data = Object.assign(
-    {
-      imagePaths: {
-        twitter: options.defaultImagePath,
-      },
-      title: "mintbean.io",
-    },
-    dataParams
-  );
-
-  const params: Params = {
-    data,
-    options,
-  };
-
-  return ejs.render(HTML, params);
+const templateHtml = (data: Data) => {
+  return ejs.render(HTML, data);
 };
 
 export default templateHtml;

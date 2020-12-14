@@ -1,12 +1,49 @@
-import { Application } from "express";
+import { Application, RequestHandler } from "express";
 import * as path from "path";
 import * as serveStatic from "serve-static";
 var parseUrl = require("parseurl");
 import * as fs from "fs";
 import htmlTemplate from "../templates/htmlTemplate";
+import UserService from "../services/UserService";
+import MeetService from "../services/MeetService";
 
 const staticPath = path.resolve(__dirname, "..", "..", "dist");
 const staticMiddleware = serveStatic(staticPath);
+
+const htmlMiddleware: RequestHandler = async (req, res, next) => {
+  var originalUrl = parseUrl.original(req);
+  var pathFromUrl = parseUrl(req).pathname;
+  const [_, type, id] = pathFromUrl.split("/");
+
+  let imagePath: string = process.env.BASE_PATH + "/dynamic/image";
+  let title: string = "mintbean.io";
+
+  switch (type) {
+    case "user": {
+      const user = await new UserService().byId(id);
+      const { firstName, lastName } = user;
+      imagePath += "?id=" + id + "&template=user";
+      title = user.firstName + " " + user.lastName + " - mintbean.io";
+      break;
+    }
+    case "meet": {
+      const meet = await new MeetService().byId(id);
+      imagePath += "?id=" + id + "&template=meet";
+      title = meet.title + " - mintbean.io";
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+
+  const html = htmlTemplate({
+    imagePath,
+    title,
+  });
+
+  res.send(html);
+};
 
 const staticRoute = (app: Application) => {
   app.get("*", (req, res, next) => {
@@ -25,14 +62,7 @@ const staticRoute = (app: Application) => {
       /^\/?index.html$/.test(filePath);
 
     if (isIndexHtml) {
-      const html = htmlTemplate(
-        {},
-        {
-          basePath: process.env.BASE_PATH,
-          defaultImagePath: "/dynamic/image",
-        }
-      );
-      res.send(html);
+      htmlMiddleware(req, res, next);
     } else {
       staticMiddleware(req, res, next);
     }
