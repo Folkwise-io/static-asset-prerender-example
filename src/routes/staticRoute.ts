@@ -28,8 +28,8 @@ const staticRoute = (app: Application) => {
       const html = htmlTemplate(
         {},
         {
-          basePath: "http://ba511a3f5717.ngrok.io",
-          defaultImagePath: "/image.jpg",
+          basePath: process.env.BASE_PATH,
+          defaultImagePath: "/dynamic/image",
         }
       );
       res.send(html);
