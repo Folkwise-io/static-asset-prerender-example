@@ -18,15 +18,20 @@ const staticPath = path.resolve(__dirname, "../", "dist");
 const staticMiddleware = serveStatic(staticPath);
 
 app.get("/dynamic/image", (req, res, next) => {
-  const text = req.params.text || "Hello, World";
+  const { query } = req;
+  const p = {
+    header: query.header || "Hello World",
+    body1: query.body1 || "This is Mintbean speaking.",
+    body2: query.body2 || "Hear us roar.",
+  };
 
   const ib = new ImageBuilder(1200, 627);
 
   const img = ib
     .background("#13cc13")
-    .header(text, { x: 200, y: 200 })
-    .paragraph("This is Mintbean speaking.", { x: 200, y: 300 })
-    .paragraph("Is there anybody out there?", { x: 200, y: 400 })
+    .header(p.header, { x: 200, y: 200 })
+    .paragraph(p.body1, { x: 200, y: 300 })
+    .paragraph(p.body2, { x: 200, y: 400 })
     .build();
 
   res.end(img);
