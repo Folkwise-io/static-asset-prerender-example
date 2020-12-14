@@ -2,33 +2,33 @@ const root = document.getElementById("root");
 
 root.innerHTML = `<b>Loading...</b>`;
 
-setTimeout(() => {
+setTimeout(async () => {
   const urlParams = new URLSearchParams(window.location.search);
 
   const id = urlParams.get("id");
-  const template = urlParams.get("template");
+  const type = urlParams.get("type");
 
-  switch (template) {
+  switch (type) {
     case "user": {
-      const firstName = urlParams.get("firstName");
-      const lastName = urlParams.get("lastName");
-      const email = urlParams.get("email");
+      const response = await fetch("/api/user/" + id);
+      const json = await response.json();
+      const { firstName, lastName, email } = json;
 
       root.innerHTML = `
-        <h1>User profile</h1>
-        <b>${firstName} ${lastName}</b>
-        <b>${email}</b>
+        <h1>${firstName} ${lastName}</h1>
+        <b>${email}</b> <br/>
+        <b>Mintbean Member</b>
       `;
       break;
     }
     case "meet": {
-      const title = urlParams.get("title");
-      const type = urlParams.get("type");
-      const date = urlParams.get("date");
+      const response = await fetch("/api/user/" + id);
+      const json = await response.json();
+      const { title, type, date } = json;
 
       root.innerHTML = `
         <h1>${title}</h1>
-        <b>${type}</b>
+        <b>${type}</b> <br/>
         <b>${date}</b>
       `;
       break;
