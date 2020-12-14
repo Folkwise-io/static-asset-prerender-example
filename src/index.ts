@@ -3,6 +3,7 @@ import * as path from "path";
 import * as serveStatic from "serve-static";
 var parseUrl = require("parseurl");
 import * as fs from "fs";
+import templateHtml from "./utils";
 
 const app = Express();
 
@@ -31,14 +32,14 @@ app.get("*", (req, res, next) => {
     /^\/?index.html$/.test(filePath);
 
   if (isIndexHtml) {
-    fs.readFile(
-      path.join(staticPath, "index.html"),
-      { encoding: "utf-8" },
-      (err, data) => {
-        console.log("SENT FILE", err, data);
-        res.send(data.replace("{{path}}", filePath));
+    const html = templateHtml(
+      {},
+      {
+        basePath: "http://ba511a3f5717.ngrok.io",
+        defaultImagePath: "/image.jpg",
       }
     );
+    res.send(html);
   } else {
     staticMiddleware(req, res, next);
   }
