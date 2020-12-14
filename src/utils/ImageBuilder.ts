@@ -6,12 +6,22 @@ import {
   CanvasRenderingContext2D,
 } from "canvas";
 
-registerFont(path.join(__dirname, "../", "fonts", "Viga", "Viga-Regular.ttf"), {
-  family: "Viga",
-});
+registerFont(
+  path.join(__dirname, "../", "../", "fonts", "Viga", "Viga-Regular.ttf"),
+  {
+    family: "Viga",
+  }
+);
 
 registerFont(
-  path.join(__dirname, "../", "fonts", "Montserrat", "Montserrat-Regular.ttf"),
+  path.join(
+    __dirname,
+    "../",
+    "../",
+    "fonts",
+    "Montserrat",
+    "Montserrat-Regular.ttf"
+  ),
   {
     family: "Montserrat",
   }

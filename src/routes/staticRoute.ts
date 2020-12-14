@@ -3,8 +3,7 @@ import * as path from "path";
 import * as serveStatic from "serve-static";
 var parseUrl = require("parseurl");
 import * as fs from "fs";
-import templateHtml from "../htmlUtil";
-import ImageBuilder from "../ImageBuilder";
+import htmlTemplate from "../templates/htmlTemplate";
 
 const staticPath = path.resolve(__dirname, "..", "..", "dist");
 const staticMiddleware = serveStatic(staticPath);
@@ -26,7 +25,7 @@ const staticRoute = (app: Application) => {
       /^\/?index.html$/.test(filePath);
 
     if (isIndexHtml) {
-      const html = templateHtml(
+      const html = htmlTemplate(
         {},
         {
           basePath: "http://ba511a3f5717.ngrok.io",

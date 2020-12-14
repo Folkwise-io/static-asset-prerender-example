@@ -37,7 +37,7 @@ const HTML = `<!DOCTYPE html>
 
   <body>
     <div id="root"></div>
-    <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
+    <script src="/script.js" type="text/javascript"></script>
   </body>
 </html>`;
 
