@@ -1,9 +1,10 @@
 import { Application } from "express";
-import ImageBuilder from "../utils/ImageBuilder";
 import UserService, { User } from "../services/UserService";
 import MeetService, { Meet } from "../services/MeetService";
 import userTemplate from "../templates/userTemplate";
 import meetTemplate from "../templates/meetTemplate";
+import TicketService, { Ticket } from "../services/TicketService";
+import ticketTemplate from "../templates/ticketTemplate";
 
 const imageRoute = (app: Application) => {
   app.get("/dynamic/image", async (req, res, next) => {
@@ -14,7 +15,7 @@ const imageRoute = (app: Application) => {
       throw new Error("id and template must be defined.");
     }
 
-    let img;
+    let img: Buffer;
     switch (template) {
       case "user": {
         const userService = new UserService();
@@ -23,7 +24,7 @@ const imageRoute = (app: Application) => {
         if (!user) {
           res.status(404).send("Mock data not found. Try ids 1, 2 or 3");
         }
-        img = userTemplate(user);
+        img = await userTemplate(user);
         break;
       }
       case "meet": {
@@ -33,7 +34,17 @@ const imageRoute = (app: Application) => {
         if (!meet) {
           res.status(404).send("Mock data not found. Try ids 1, 2 or 3");
         }
-        img = meetTemplate(meet);
+        img = await meetTemplate(meet);
+        break;
+      }
+      case "ticket": {
+        const ticketService = new TicketService();
+        const ticket: Ticket = await ticketService.byId(Number.parseInt(id));
+
+        if (!ticket) {
+          res.status(404).send("Mock data not found. Try ids 1, 2 or 3");
+        }
+        img = await ticketTemplate(ticket);
         break;
       }
       default: {

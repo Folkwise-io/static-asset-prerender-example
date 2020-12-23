@@ -1,8 +1,8 @@
 import ImageBuilder from "../utils/ImageBuilder";
 import { User } from "../services/UserService";
 
-export default (user: User): Buffer => {
-  const b = new ImageBuilder(1200, 627);
+export default async (user: User): Promise<Buffer> => {
+  const b = await ImageBuilder.init(1200, 627);
 
   return b
     .background("#13cc13")
